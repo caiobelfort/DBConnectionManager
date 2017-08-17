@@ -57,9 +57,9 @@ class DatabaseConnectionManager:
 
         return [key for key in self.__configs]
 
-    def get_connection(self, connection_name):
+    def get_engine(self, connection_name):
         """
-        Cria conexão
+        Cria engine de conexão
 
         Parameters
         ----------

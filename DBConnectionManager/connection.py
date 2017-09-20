@@ -8,8 +8,7 @@ Módulo de conexão com banco
 Todas as conexões são administradas por um arquivo de configuração
 """
 
-
-class DatabaseConnectionManager:
+class DBConnectionManager:
     """
     Lê arquivo de configuração e administra conexões fornecidas no arquivo
     """
@@ -69,7 +68,6 @@ class DatabaseConnectionManager:
         Returns
         -------
         sqlalchemy.engine.Engine
-
         """
 
         conn_dict = self.__configs[connection_name]

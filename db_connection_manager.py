@@ -23,8 +23,7 @@ def get_engines(config_file=None):
     """
 
     dbman = DBConnectionManager(config_file=config_file)
-    return {conn_name: dbman.get_engine(conn_name) for conn_name, _ in dbman.connections }
-
+    return {conn_name: dbman.get_engine(conn_name) for conn_name, _ in dbman.connections}
 
 
 class DBConnectionManager:
@@ -71,8 +70,6 @@ class DBConnectionManager:
         with open(config_file) as file:
             self.__configs = json.load(file)
 
-
-
     @property
     def connections(self):
         """
@@ -85,7 +82,7 @@ class DBConnectionManager:
         """
         return [(key, self.__configs[key]['type']) for key in self.__configs]
 
-    def get_engine(self, connection_name):
+    def get_engine(self, connection_name, **kwargs):
         """
         Returns a sqlalchemy engine with the **connection_name** connection bind to it
 
@@ -94,6 +91,7 @@ class DBConnectionManager:
         connection_name: str
             Name of a connection object in **config_file**
 
+
         Returns
         -------
         sqlalchemy.engine.Engine
@@ -101,20 +99,22 @@ class DBConnectionManager:
 
         conn_dict = self.__configs[connection_name]
 
-
         if conn_dict['type'] in ('sql-server', 'mssql'):
-            return self.__get_mssql_connection(conn_dict)
+            conn_str = self.__get_mssql_connection_string(conn_dict)
         elif conn_dict['type'] in ('postgres', 'postgresql'):
-            return self.__get_postgres_connection(conn_dict)
+            conn_str = self.__get_postgres_connection_string(conn_dict)
         else:
             raise ValueError('banco ' + conn_dict['type'] + 'não suportado')
 
-    def __get_mssql_connection(self, conn_dict):
+        return create_engine(conn_str, **kwargs)
+
+    def __get_mssql_connection_string(self, conn_dict):
         conn_str = 'mssql+pymssql://' + conn_dict['user'] + ':' + conn_dict['pwd'] + '@' + conn_dict['host'] + '/' + \
                    conn_dict['database']
-        return create_engine(conn_str)
+        return conn_str
 
-    def __get_postgres_connection(self, conn_dict):
+    def __get_postgres_connection_string(self, conn_dict):
         conn_str = "postgresql+psycopg2://" + conn_dict['user'] + ':' + conn_dict['pwd'] + '@' + \
                    conn_dict['host'] + '/' + conn_dict['database']
-        return create_engine(conn_str)
+        return conn_str
+

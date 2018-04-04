@@ -72,7 +72,3 @@ def _check_required_attrs(connection_conf, connection_name):
         if v not in connection_conf:
             raise ValueError(error_string % (v, connection_name))
 
-
-if __name__ == '__main__':
-    eng = get_engine('gmcore-producao')
-    print(eng)

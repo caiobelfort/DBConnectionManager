@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='db_connection_manager',
-    version='0.03b',
+    version='0.04a',
     description='A project for management of connections of databases',
     author='Caio Belfort',
     author_email='caiobelfort90@gmail.com',

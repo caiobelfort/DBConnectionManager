@@ -72,7 +72,7 @@ def _check_required_attrs(connection_conf, connection_name):
     required_attr = ('type', 'user', 'pwd', 'host', 'database')
     for v in required_attr:
         if v not in connection_conf:
-            raise ValueError(error_string % (v, connection_name))
+            raise RuntimeError(error_string % (v, connection_name))
 
 
 def get_ctds_connection(connection_name: str, config_file: str = None):

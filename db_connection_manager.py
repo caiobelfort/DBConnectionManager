@@ -3,6 +3,7 @@ from pathlib import Path
 
 import sqlalchemy as sa
 from sqlalchemy import engine
+import ctds
 
 
 def _get_connection_driver(dialect: str) -> str:
@@ -75,7 +76,7 @@ def _check_required_attrs(connection_conf, connection_name):
             raise RuntimeError(error_string % (v, connection_name))
 
 
-def get_ctds_connection(connection_name: str, config_file: str = None):
+def get_ctds_connection(connection_name: str, config_file: str = None) -> ctds.Connection:
     """
     Create a ctds connection from a connection define in a json file
     Args:
@@ -84,7 +85,7 @@ def get_ctds_connection(connection_name: str, config_file: str = None):
     Returns:
         ctds.Connection: A ctds connection
     """
-    import ctds
+
 
     conf = load_connection_config(config_file, connection_name)
 
@@ -97,6 +98,6 @@ def get_ctds_connection(connection_name: str, config_file: str = None):
     pwd = conf['pwd']
     database = conf['database']
 
-    conn = ctds.connect(hostname, port, user=user, password=pwd, database=database)
+    conn = ctds.connect(hostname, port, user=user, password=pwd, database=database, login_timeout=300, timeout=300)
     return conn
 

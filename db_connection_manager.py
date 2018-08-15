@@ -24,17 +24,20 @@ def _get_connection_driver(dialect: str) -> str:
 
 
 def get_engine(connection_name: str,
+               driver: str,
                config_file: str or None = None,
                **kwargs
                ) -> engine.Engine:
     """
     Returns an sqlalchemy engine from a configuration file
     Args:
-        connection_name: Name of connection
+        connection_name: Name of connection in the configuration file
+        driver: Name of the driver
         config_file: Configuration file where the *connection_name* parameters are declared. Only JSON
     Returns:
         A SQLAlchemy engine
     """
+
 
     conf = load_connection_config(config_file, connection_name)
 
@@ -43,7 +46,6 @@ def get_engine(connection_name: str,
 
     # Get connection configurations
     dialect = conf['type']
-    driver = _get_connection_driver(dialect)
     hostname = conf['host'] + ':' + conf['port'] if 'port' in conf else conf['host']
     user = conf['user']
     pwd = conf['pwd']

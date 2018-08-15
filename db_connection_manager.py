@@ -3,7 +3,6 @@ from pathlib import Path
 
 import sqlalchemy as sa
 from sqlalchemy import engine
-import ctds
 
 
 def _get_connection_driver(dialect: str) -> str:
@@ -77,6 +76,7 @@ def _check_required_attrs(connection_conf, connection_name):
 
 
 def get_ctds_connection(connection_name: str, config_file: str = None) -> ctds.Connection:
+    import ctds
     """
     Create a ctds connection from a connection define in a json file
     Args:
@@ -86,18 +86,16 @@ def get_ctds_connection(connection_name: str, config_file: str = None) -> ctds.C
         ctds.Connection: A ctds connection
     """
 
-
-    conf = load_connection_config(config_file, connection_name)
+    conf: dict = load_connection_config(config_file, connection_name)
 
     if conf['type'] != 'mssql':
         raise RuntimeError('%s is not a MSSQL connection.' % connection_name)
 
-    hostname = conf['host']
-    port = int(conf.get('port', '1433'))
-    user = conf['user']
-    pwd = conf['pwd']
-    database = conf['database']
+    hostname: str = conf['host']
+    port: str = int(conf.get('port', '1433'))
+    user: str = conf['user']
+    pwd: str = conf['pwd']
+    database: str = conf['database']
 
     conn = ctds.connect(hostname, port, user=user, password=pwd, database=database, login_timeout=300, timeout=300)
     return conn
-

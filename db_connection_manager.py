@@ -5,24 +5,6 @@ import sqlalchemy as sa
 from sqlalchemy import engine
 
 
-def _get_connection_driver(dialect: str) -> str:
-    """
-    Returns the driver for the database
-    Args:
-        dialect: Type of database
-
-    Returns:
-        The driver for engine creation
-    """
-
-    if dialect == 'mssql':
-        return 'pymssql'
-    elif dialect == 'postgres':
-        return 'psycopg2'
-    else:
-        raise ValueError('database vendor %s not supported' % dialect)
-
-
 def get_engine(connection_name: str,
                driver: str,
                config_file: str or None = None,
@@ -37,7 +19,6 @@ def get_engine(connection_name: str,
     Returns:
         A SQLAlchemy engine
     """
-
 
     conf = load_connection_config(config_file, connection_name)
 
@@ -94,7 +75,7 @@ def get_ctds_connection(connection_name: str, config_file: str = None) -> ctds.C
         raise RuntimeError('%s is not a MSSQL connection.' % connection_name)
 
     hostname: str = conf['host']
-    port: str = int(conf.get('port', '1433'))
+    port: int = int(conf.get('port', '1433'))
     user: str = conf['user']
     pwd: str = conf['pwd']
     database: str = conf['database']

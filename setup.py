@@ -12,10 +12,10 @@ setup(
     install_requires=['sqlalchemy'],
     classifiers=[
         'Development Status :: 4 - Beta',
-        'Topic :: Software Development :: Database',
+        'Topic :: Software Development',
         'Intended Audience :: Developers',
         'Programming Language :: Python :: 3.6'
         'Programming Language :: Python :: 3.7',
-        'Operation System :: POSIX'
+        'Operation System :: POSIX :: Linux'
     ]
 )

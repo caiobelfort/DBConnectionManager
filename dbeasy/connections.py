@@ -14,10 +14,10 @@ def get_sqlalchemy_engine(connection_name: str,
 
     Args:
         connection_name: Name of connection in the configuration file
-        driver: Name of the driver
         config_file: Configuration file where the *connection_name* parameters are declared. Only JSON
+        **kwargs: Additional parameters for sqlalchemy create_engine function
     Returns:
-        A SQLAlchemy engine
+        A sqlalchemy engine
     """
 
     conf = load_connection_config(config_file, connection_name)

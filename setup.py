@@ -1,13 +1,13 @@
 from setuptools import setup
 
 setup(
-    name='db_connection_manager',
-    version='0.06',
-    description='A project for management of connections of databases',
+    name='dbeasy',
+    version='0.07',
+    description='Database utilities',
     author='Caio Belfort',
     author_email='caiobelfort90@gmail.com',
     license='GPL',
-    py_modules=['db_connection_manager'],
+    packages=['dbeasy'],
     zip_safe=False,
     install_requires=['sqlalchemy'],
     classifiers=[

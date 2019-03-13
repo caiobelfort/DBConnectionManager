@@ -5,13 +5,13 @@ import sqlalchemy as sa
 from sqlalchemy import engine
 
 
-def get_engine(connection_name: str,
-               driver: str,
-               config_file: str or None = None,
-               **kwargs
-               ) -> engine.Engine:
+def get_sqlalchemy_engine(connection_name: str,
+                          config_file: str or None = None,
+                          **kwargs
+                          ) -> engine.Engine:
     """
     Returns an sqlalchemy engine from a configuration file
+
     Args:
         connection_name: Name of connection in the configuration file
         driver: Name of the driver
@@ -26,7 +26,8 @@ def get_engine(connection_name: str,
     _check_required_attrs(conf, connection_name)
 
     # Get connection configurations
-    dialect = conf['type']
+    dialect = conf['dialect']
+    driver = conf['driver']
     hostname = conf['host'] + ':' + conf['port'] if 'port' in conf else conf['host']
     user = conf['user']
     pwd = conf['pwd']
@@ -52,33 +53,37 @@ def load_connection_config(config_file, connection_name):
 
 def _check_required_attrs(connection_conf, connection_name):
     error_string = 'Required Attribute %s not declared in configuration file for connection %s.'
-    required_attr = ('type', 'user', 'pwd', 'host', 'database')
+    required_attr = ('dialect', 'driver', 'user', 'pwd', 'host', 'database')
     for v in required_attr:
         if v not in connection_conf:
             raise RuntimeError(error_string % (v, connection_name))
 
 
-def get_ctds_connection(connection_name: str, config_file: str = None) -> ctds.Connection:
+# Defines only if ctds exists
+try:
     import ctds
-    """
-    Create a ctds connection from a connection define in a json file
-    Args:
-        connection_name: Name of connection
-        config_file: Name of file with defined connections
-    Returns:
-        ctds.Connection: A ctds connection
-    """
+except:
+    pass
+else:
+    def get_ctds_connection(connection_name: str, config_file: str = None) -> ctds.Connection:
+        """
+        Create a ctds connection from a connection define in a json file
+        Args:
+            connection_name: Name of connection
+            config_file: Name of file with defined connections
+        Returns:
+            ctds.Connection: A ctds connection
+        """
+        conf: dict = load_connection_config(config_file, connection_name)
 
-    conf: dict = load_connection_config(config_file, connection_name)
+        if conf['dialect'] != 'mssql':
+            raise RuntimeError('%s is not a MSSQL connection.' % connection_name)
 
-    if conf['type'] != 'mssql':
-        raise RuntimeError('%s is not a MSSQL connection.' % connection_name)
+        hostname: str = conf['host']
+        port: int = int(conf.get('port', '1433'))
+        user: str = conf['user']
+        pwd: str = conf['pwd']
+        database: str = conf['database']
 
-    hostname: str = conf['host']
-    port: int = int(conf.get('port', '1433'))
-    user: str = conf['user']
-    pwd: str = conf['pwd']
-    database: str = conf['database']
-
-    conn = ctds.connect(hostname, port, user=user, password=pwd, database=database, login_timeout=300, timeout=300)
-    return conn
+        conn = ctds.connect(hostname, port, user=user, password=pwd, database=database, login_timeout=300, timeout=300)
+        return conn

@@ -1,5 +1,7 @@
-Pacote para criar conexões com o banco de dados
+A simple package for database utilities in Python
 
-Dependencias:
-sqlalchemy
-drivers de conexão com os bancos de dados necessários
+
+Dependecies:
+ - sqlalchemy
+
+
